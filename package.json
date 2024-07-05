@@ -5,8 +5,10 @@
   "main": "index.ts",
   "scripts": {
     "start:dev": "ts-node-dev --respawn index.ts",
+    "prisma:dev:deploy": "prisma migrate deploy",
     "db:dev:rm": "docker-compose rm dev-db -s -f -v",
-    "db:dev:up": "docker-compose up dev-db -d"
+    "db:dev:up": "docker-compose up dev-db -d",
+    "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && sleep 1 && npm run prisma:dev:deploy"
   },
   "keywords": [],
   "author": "",
