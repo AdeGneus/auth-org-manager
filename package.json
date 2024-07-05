@@ -2,9 +2,11 @@
   "name": "auth-org-manager",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "ts-node-dev --respawn index.ts",
+    "db:dev:rm": "docker-compose rm dev-db -s -f -v",
+    "db:dev:up": "docker-compose up dev-db -d"
   },
   "keywords": [],
   "author": "",
