@@ -2,6 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import config from "config";
 import { AppError, IResponseError } from "../exceptions/appError";
 import log from "../utils/logger";
+import { UnauthorizedError } from "../exceptions/unauthorizedError";
+
+const handleFailAuth = (err: any) => {
+  const message = err.message;
+
+  return new UnauthorizedError(message);
+};
 
 export const sendErrorDev = (err: any, req: Request, res: Response) => {
   if (
@@ -60,6 +67,9 @@ const errorHandler = (
   if (env === "development") {
     sendErrorDev(err, req, res);
   } else if (env === "production") {
+    if (err.message === "Authentication failed") {
+      err = handleFailAuth(err);
+    }
     sendErrorProd(err, req, res);
   }
 };

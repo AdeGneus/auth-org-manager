@@ -7,3 +7,8 @@ export interface UserInput {
   password: PrismaUser["password"];
   phone?: PrismaUser["phone"];
 }
+
+export interface LoginUserInput {
+  email: string;
+  password: string;
+}
