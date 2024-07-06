@@ -3,6 +3,7 @@ import config from "config";
 import morgan from "morgan";
 
 import appErrorHandler from "./middlewares/errorHandler";
+import router from "./routes/index.routes";
 import { NotFoundError } from "./exceptions/notFoundError";
 
 const app = express();
@@ -19,6 +20,9 @@ if (config.get<string>("NODE_ENV") === "development") {
 
 // Body parser
 app.use(express.json({ limit: "10kb" }));
+
+// Routes
+app.use("/", router);
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));
