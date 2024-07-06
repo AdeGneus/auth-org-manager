@@ -3,11 +3,16 @@ import config from "config";
 import { AppError, IResponseError } from "../exceptions/appError";
 import log from "../utils/logger";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 const handleFailAuth = (err: any) => {
   const message = err.message;
 
   return new UnauthorizedError(message);
+};
+
+const handleJWTError = (err: JsonWebTokenError) => {
+  return new AppError(`${err.message}!. Please log in again`, 401);
 };
 
 export const sendErrorDev = (err: any, req: Request, res: Response) => {
@@ -70,6 +75,10 @@ const errorHandler = (
     if (err.message === "Authentication failed") {
       err = handleFailAuth(err);
     }
+    if (err instanceof JsonWebTokenError) {
+      err = handleJWTError(err);
+    }
+
     sendErrorProd(err, req, res);
   }
 };

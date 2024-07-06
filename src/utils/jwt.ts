@@ -1,4 +1,4 @@
-import { SignOptions, sign } from "jsonwebtoken";
+import { SignOptions, sign, verify } from "jsonwebtoken";
 import config from "config";
 
 export const signToken = (
@@ -15,4 +15,17 @@ export const signToken = (
     ...(options && options),
     algorithm: "RS256",
   });
+};
+
+export const verifyToken = <U>(
+  token: string,
+  keyName: "accessTokenPublicKey"
+): U => {
+  const publicKey = Buffer.from(config.get<string>(keyName), "base64").toString(
+    "ascii"
+  );
+
+  const decoded = verify(token, publicKey) as U;
+
+  return decoded;
 };
