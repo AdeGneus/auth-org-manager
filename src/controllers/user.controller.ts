@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/asyncHandler";
 import { CustomRequest } from "../interfaces/customRequest";
-import prisma from "../prisma/db";
 import { NotFoundError } from "../exceptions/notFoundError";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
-import { findUserById } from "../services/user.service";
+import {
+  findUserById,
+  findUserInOrganisations,
+} from "../services/user.service";
 
 export const getUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -18,7 +20,12 @@ export const getUser = asyncHandler(
       );
     }
 
-    const user = await findUserById(id);
+    let user;
+    if (currentUser?.userId === id) {
+      user = await findUserById(id);
+    } else {
+      user = await findUserInOrganisations(currentUser.userId, id);
+    }
 
     if (!user) {
       return next(new NotFoundError("user not found"));

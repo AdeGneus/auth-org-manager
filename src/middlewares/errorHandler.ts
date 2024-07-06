@@ -5,7 +5,7 @@ import log from "../utils/logger";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
 import { JsonWebTokenError } from "jsonwebtoken";
 
-const handleFailAuth = (err: any) => {
+const handleFailedAuth = (err: any) => {
   const message = err.message;
 
   return new UnauthorizedError(message);
@@ -73,7 +73,7 @@ const errorHandler = (
     sendErrorDev(err, req, res);
   } else if (env === "production") {
     if (err.message === "Authentication failed") {
-      err = handleFailAuth(err);
+      err = handleFailedAuth(err);
     }
     if (err instanceof JsonWebTokenError) {
       err = handleJWTError(err);

@@ -1,11 +1,11 @@
 import { Router } from "express";
 import deserializeUser from "../middlewares/deserializeUser";
-import { getUser } from "../controllers/user.controllers";
+import { getOrganisation } from "../controllers/organisation.controller";
 
 const router = Router();
 
 // Protected routes
 router.use(deserializeUser);
-router.get("/:id", getUser);
+router.get("/", getOrganisation);
 
 export default router;

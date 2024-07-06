@@ -3,7 +3,7 @@ import config from "config";
 import morgan from "morgan";
 
 import appErrorHandler from "./middlewares/errorHandler";
-import router from "./routes/index.routes";
+import router from "./routes/index.route";
 import { NotFoundError } from "./exceptions/notFoundError";
 
 const app = express();
