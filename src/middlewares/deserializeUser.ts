@@ -10,7 +10,10 @@ const deserializeUser = asyncHandler(
     // 1) Get token and check if it exists
     let accessToken = "";
 
-    if (req.headers.authorization && req.headers.authorization.startsWith("")) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
       accessToken = req.headers.authorization.split(" ")[1];
     }
 
