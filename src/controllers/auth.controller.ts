@@ -36,7 +36,9 @@ export const register = asyncHandler(
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
-      return next(new ClientError("Registration unsuccessful"));
+      return res.status(422).json({
+        errors: [{ field: "email", message: "Email already exists" }],
+      });
     }
 
     // Create a new user record
@@ -47,6 +49,10 @@ export const register = asyncHandler(
       password,
       phone,
     });
+
+    if (!newUser) {
+      return next(new ClientError("Registration unsuccessful"));
+    }
     createSendToken(newUser, 201, "Registration successful", res);
   }
 );
