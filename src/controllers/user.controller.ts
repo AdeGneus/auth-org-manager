@@ -24,7 +24,8 @@ export const getUser = asyncHandler(
     if (currentUser?.userId === id) {
       user = await findUserById(id);
     } else {
-      user = await findUserInOrganisations(currentUser.userId, id);
+      const usersInOrgs = await findUserInOrganisations(currentUser.userId, id);
+      user = usersInOrgs.find((user) => user.userId === id);
     }
 
     if (!user) {

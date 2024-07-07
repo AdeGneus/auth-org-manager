@@ -17,7 +17,7 @@ export const findUserById = async (id: string) => {
 
 export const findUserInOrganisations = async (
   userId: string,
-  orgId: string
+  orgUserId: string
 ) => {
   const organisations = await prisma.organisation.findMany({
     where: {
@@ -27,7 +27,7 @@ export const findUserInOrganisations = async (
     },
     select: {
       users: {
-        where: { userId },
+        where: { userId: orgUserId },
         select: {
           userId: true,
           firstName: true,
@@ -39,5 +39,5 @@ export const findUserInOrganisations = async (
     },
   });
 
-  return organisations.map((org) => org.users[0]);
+  return organisations.flatMap((org) => org.users);
 };
