@@ -2,11 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/asyncHandler";
 import { CustomRequest } from "../interfaces/customRequest";
 import { NotFoundError } from "../exceptions/notFoundError";
+import {
+  findOganisationsByUserId,
+  findOrganisationById,
+  isUserInOrganisation,
+} from "../services/organisation.service";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
-import { findUserById } from "../services/user.service";
-import { findOganisationsByUserId } from "../services/organisation.service";
 
-export const getOrganisation = asyncHandler(
+export const getOrganisations = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if the user is accessing their own data or has permission to access
     const currentUser = (req as CustomRequest).user;
@@ -22,6 +25,38 @@ export const getOrganisation = asyncHandler(
       message: "Organisations fetched successfully",
       data: {
         organisations,
+      },
+    });
+  }
+);
+
+export const getOrganisation = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orgId } = req.params;
+    const currentUser = (req as CustomRequest).user;
+
+    // Check if user belongs to the organization
+    const hasAccess = await isUserInOrganisation(currentUser?.userId, orgId);
+
+    if (!hasAccess) {
+      return next(
+        new UnauthorizedError(
+          "You do not have permission to access this organization"
+        )
+      );
+    }
+
+    const organisation = await findOrganisationById(orgId);
+
+    if (!organisation) {
+      return next(new NotFoundError("organisation not found"));
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Organization fetched successfully",
+      data: {
+        organisation,
       },
     });
   }
