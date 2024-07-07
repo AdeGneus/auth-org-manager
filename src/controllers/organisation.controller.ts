@@ -3,6 +3,7 @@ import asyncHandler from "../middlewares/asyncHandler";
 import { CustomRequest } from "../interfaces/customRequest";
 import { NotFoundError } from "../exceptions/notFoundError";
 import {
+  createNewOrganisation,
   findOganisationsByUserId,
   findOrganisationById,
   isUserInOrganisation,
@@ -58,6 +59,25 @@ export const getOrganisation = asyncHandler(
       data: {
         organisation,
       },
+    });
+  }
+);
+
+export const createOrganisation = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { name, description } = req.body;
+    const currentUser = (req as CustomRequest).user;
+
+    const newOrganisation = await createNewOrganisation(
+      name,
+      description,
+      currentUser?.userId
+    );
+
+    return res.status(201).json({
+      status: "success",
+      message: "Organisation created successfully",
+      data: newOrganisation,
     });
   }
 );

@@ -40,3 +40,26 @@ export const findOrganisationById = async (orgId: string) => {
   });
   return organisation;
 };
+
+export const createNewOrganisation = async (
+  name: string,
+  description: string | null,
+  userId: string
+) => {
+  const newOrganisation = await prisma.organisation.create({
+    data: {
+      name,
+      description,
+      users: {
+        connect: { userId },
+      },
+    },
+    select: {
+      orgId: true,
+      name: true,
+      description: true,
+    },
+  });
+
+  return newOrganisation;
+};

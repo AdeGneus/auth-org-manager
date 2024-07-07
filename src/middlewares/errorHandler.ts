@@ -1,9 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import config from "config";
-import { AppError, IResponseError } from "../exceptions/appError";
+import { AppError } from "../exceptions/appError";
 import log from "../utils/logger";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
 import { JsonWebTokenError } from "jsonwebtoken";
+import { ResponseError } from "../interfaces/responseError";
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+  PrismaClientValidationError,
+} from "@prisma/client/runtime/library";
+import { ClientError } from "../exceptions/clientError";
 
 const handleFailedAuth = (err: any) => {
   const message = err.message;
@@ -11,8 +18,11 @@ const handleFailedAuth = (err: any) => {
   return new UnauthorizedError(message);
 };
 
-const handleJWTError = (err: JsonWebTokenError) => {
-  return new AppError(`${err.message}!. Please log in again`, 401);
+const handleJWTError = () => {
+  return new AppError("Authentication failed", 401);
+};
+const handlePrismaError = () => {
+  return new ClientError("Client Error");
 };
 
 export const sendErrorDev = (err: any, req: Request, res: Response) => {
@@ -42,7 +52,7 @@ export const sendErrorProd = (err: any, req: Request, res: Response) => {
         status: appError.status,
         message: appError.message,
         statusCode: appError.statusCode,
-      } as IResponseError;
+      } as ResponseError;
 
       return res.status(appError.statusCode).json(response);
     }
@@ -75,10 +85,15 @@ const errorHandler = (
     if (err.message === "Authentication failed") {
       err = handleFailedAuth(err);
     }
+
     if (err instanceof JsonWebTokenError) {
-      err = handleJWTError(err);
+      err = handleJWTError();
     }
 
+    if (err instanceof TypeError) {
+      err.message = "Authentication failed";
+      err = handleFailedAuth(err);
+    }
     sendErrorProd(err, req, res);
   }
 };

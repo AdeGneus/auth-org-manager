@@ -13,9 +13,3 @@ export class AppError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
-
-export interface IResponseError {
-  status: string;
-  message: string;
-  statusCode: number;
-}
