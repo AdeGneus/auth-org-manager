@@ -7,7 +7,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "lib": ["ES2015", "ES2019"],
+    "types": ["node", "config", "express", "morgan", "jsonwebtoken", "uuid"]
   },
   "include": ["src/**/*", "index.ts", "prisma/**/*"]
 }
