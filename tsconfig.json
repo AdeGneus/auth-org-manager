@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "rootDir": ".",
+    "rootDir": "./",
     "outDir": "dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -11,5 +11,11 @@
     "skipLibCheck": true
   },
   "types": ["node", "ts-node"],
-  "include": ["src", "index.ts", "config", "node_modules/ts-node/**/*"]
+  "include": [
+    "src",
+    "index.ts",
+    "node_modules/ts-node/**/*",
+    "config",
+    "prisma/**/*"
+  ]
 }
