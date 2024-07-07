@@ -63,3 +63,15 @@ export const createNewOrganisation = async (
 
   return newOrganisation;
 };
+
+export const addUserToOrganisation = async (orgId: string, userId: string) => {
+  const organisation = await prisma.organisation.update({
+    where: { orgId },
+    data: {
+      users: {
+        connect: { userId },
+      },
+    },
+  });
+  return organisation;
+};

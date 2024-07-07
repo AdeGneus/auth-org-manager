@@ -75,3 +75,29 @@ export const validateCreateOrganisation = (
   }
   next();
 };
+
+export const validateAddUserToOrganisation = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.body;
+  const errors = [];
+
+  if (!userId) {
+    errors.push({ field: "userId", message: "User ID is required" });
+  }
+  if (typeof userId !== "string") {
+    errors.push({ field: "userId", message: "User ID must be a string" });
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      status: "Bad Request",
+      message: "Client error",
+      statusCode: 400,
+      errors,
+    });
+  }
+  next();
+};

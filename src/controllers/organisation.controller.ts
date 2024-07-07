@@ -3,6 +3,7 @@ import asyncHandler from "../middlewares/asyncHandler";
 import { CustomRequest } from "../interfaces/customRequest";
 import { NotFoundError } from "../exceptions/notFoundError";
 import {
+  addUserToOrganisation,
   createNewOrganisation,
   findOganisationsByUserId,
   findOrganisationById,
@@ -78,6 +79,32 @@ export const createOrganisation = asyncHandler(
       status: "success",
       message: "Organisation created successfully",
       data: newOrganisation,
+    });
+  }
+);
+
+export const addUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orgId } = req.params;
+    const { userId } = req.body;
+    const currentUser = (req as CustomRequest).user;
+
+    // Check if current user belongs to the organization
+    const hasAccess = await isUserInOrganisation(currentUser?.userId, orgId);
+
+    if (!hasAccess) {
+      return next(
+        new UnauthorizedError(
+          "You do not have permission to access this organization"
+        )
+      );
+    }
+
+    await addUserToOrganisation(orgId, userId);
+
+    return res.status(200).json({
+      status: "success",
+      message: "User added to organisation successfully",
     });
   }
 );
