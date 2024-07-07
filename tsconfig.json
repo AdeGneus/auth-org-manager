@@ -1,29 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "rootDir": "./",
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-
+    "outDir": "./dist",
+    "rootDir": ".",
     "strict": true,
-    "skipLibCheck": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": ["node", "config", "express", "morgan", "jsonwebtoken", "uuid"]
   },
-  "types": [
-    "node",
-    "ts-node",
-    "express",
-    "config",
-    "morgan",
-    "jsonwebtoken",
-    "uuid"
-  ],
-  "include": [
-    "src",
-    "index.ts",
-    "node_modules/ts-node/**/*",
-    "config",
-    "prisma/**/*"
-  ]
+  "include": ["src/**/*", "index.ts", "prisma/**/*"]
 }
