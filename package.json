@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
-  "type": "module",
   "scripts": {
     "start": "node dist/index.js",
     "start:dev": "ts-node-dev --respawn index.ts",
@@ -20,7 +19,7 @@
     "test:unit": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-unit.json",
     "pretest:e2e": "npm run db:test:restart",
     "test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json",
-    "build": "tsc && cpy 'prisma/**/*' dist/prisma"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
