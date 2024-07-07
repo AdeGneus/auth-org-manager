@@ -7,8 +7,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "types": ["node", "config", "express", "morgan", "jsonwebtoken", "uuid"]
+    "resolveJsonModule": true
   },
   "include": ["src/**/*", "index.ts", "prisma/**/*"]
 }

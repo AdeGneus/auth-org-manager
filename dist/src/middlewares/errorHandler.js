@@ -4,23 +4,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendErrorProd = exports.sendErrorDev = void 0;
-const config_1 = __importDefault(require("config"));
-const appError_1 = require("../exceptions/appError");
-const logger_1 = __importDefault(require("../utils/logger"));
-const unauthorizedError_1 = require("../exceptions/unauthorizedError");
-const jsonwebtoken_1 = require("jsonwebtoken");
-const clientError_1 = require("../exceptions/clientError");
-const handleFailedAuth = (err) => {
-    const message = err.message;
+var config_1 = __importDefault(require("config"));
+var appError_1 = require("../exceptions/appError");
+var logger_1 = __importDefault(require("../utils/logger"));
+var unauthorizedError_1 = require("../exceptions/unauthorizedError");
+var jsonwebtoken_1 = require("jsonwebtoken");
+var clientError_1 = require("../exceptions/clientError");
+var handleFailedAuth = function (err) {
+    var message = err.message;
     return new unauthorizedError_1.UnauthorizedError(message);
 };
-const handleJWTError = () => {
+var handleJWTError = function () {
     return new appError_1.AppError("Authentication failed", 401);
 };
-const handlePrismaError = () => {
+var handlePrismaError = function () {
     return new clientError_1.ClientError("Client Error");
 };
-const sendErrorDev = (err, req, res) => {
+var sendErrorDev = function (err, req, res) {
     if (req.originalUrl.startsWith("/auth") ||
         req.originalUrl.startsWith("/api")) {
         return res.status(err.statusCode).json({
@@ -32,13 +32,13 @@ const sendErrorDev = (err, req, res) => {
     }
 };
 exports.sendErrorDev = sendErrorDev;
-const sendErrorProd = (err, req, res) => {
+var sendErrorProd = function (err, req, res) {
     if (req.originalUrl.startsWith("/auth") ||
         req.originalUrl.startsWith("/api")) {
         // 1)  Operational, trusted error: send message to client
         if (err instanceof appError_1.AppError && err.isOperational) {
-            const appError = err;
-            let response = {
+            var appError = err;
+            var response = {
                 status: appError.status,
                 message: appError.message,
                 statusCode: appError.statusCode,
@@ -46,7 +46,7 @@ const sendErrorProd = (err, req, res) => {
             return res.status(appError.statusCode).json(response);
         }
         // 2) Programming or other unknown error: don't leak error details
-        logger_1.default.error(`💥: ${err}`);
+        logger_1.default.error("\uD83D\uDCA5: ".concat(err));
         // Send generic message
         return res.status(500).json({
             status: "error",
@@ -56,10 +56,11 @@ const sendErrorProd = (err, req, res) => {
     }
 };
 exports.sendErrorProd = sendErrorProd;
-const errorHandler = (err, req, res, next) => {
-    err.statusCode = err.statusCode ?? 500;
-    err.status = err.status ?? "error";
-    const env = config_1.default.get("NODE_ENV");
+var errorHandler = function (err, req, res, next) {
+    var _a, _b;
+    err.statusCode = (_a = err.statusCode) !== null && _a !== void 0 ? _a : 500;
+    err.status = (_b = err.status) !== null && _b !== void 0 ? _b : "error";
+    var env = config_1.default.get("NODE_ENV");
     if (env === "development") {
         (0, exports.sendErrorDev)(err, req, res);
     }

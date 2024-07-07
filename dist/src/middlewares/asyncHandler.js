@@ -5,7 +5,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @param fn Function to call for the API endpoint
  * @returns Promise with a catch statement
  */
-const asyncHandler = (fn) => (req, res, next) => {
-    return Promise.resolve(fn(req, res, next)).catch(next);
+var asyncHandler = function (fn) {
+    return function (req, res, next) {
+        return Promise.resolve(fn(req, res, next)).catch(next);
+    };
 };
 exports.default = asyncHandler;

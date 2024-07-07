@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateAddUserToOrganisation = exports.validateCreateOrganisation = exports.validateRegister = void 0;
-const validateRegister = (req, res, next) => {
-    const { firstName, lastName, email, password } = req.body;
-    const errors = [];
+var validateRegister = function (req, res, next) {
+    var _a = req.body, firstName = _a.firstName, lastName = _a.lastName, email = _a.email, password = _a.password;
+    var errors = [];
     if (!firstName) {
         errors.push({ field: "firstName", message: "First name is required" });
     }
@@ -22,7 +22,7 @@ const validateRegister = (req, res, next) => {
     if (typeof email !== "string") {
         errors.push({ field: "email", message: "Email must be a string" });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email)) {
         errors.push({ field: "email", message: "Email format is invalid" });
     }
@@ -33,14 +33,14 @@ const validateRegister = (req, res, next) => {
         errors.push({ field: "password", message: "Password must be a string" });
     }
     if (errors.length > 0) {
-        return res.status(422).json({ errors });
+        return res.status(422).json({ errors: errors });
     }
     next();
 };
 exports.validateRegister = validateRegister;
-const validateCreateOrganisation = (req, res, next) => {
-    const { name, description } = req.body;
-    const errors = [];
+var validateCreateOrganisation = function (req, res, next) {
+    var _a = req.body, name = _a.name, description = _a.description;
+    var errors = [];
     if (!name)
         errors.push({ field: "name", message: "Name is required" });
     if (typeof name !== "string")
@@ -61,9 +61,9 @@ const validateCreateOrganisation = (req, res, next) => {
     next();
 };
 exports.validateCreateOrganisation = validateCreateOrganisation;
-const validateAddUserToOrganisation = (req, res, next) => {
-    const { userId } = req.body;
-    const errors = [];
+var validateAddUserToOrganisation = function (req, res, next) {
+    var userId = req.body.userId;
+    var errors = [];
     if (!userId) {
         errors.push({ field: "userId", message: "User ID is required" });
     }
@@ -75,7 +75,7 @@ const validateAddUserToOrganisation = (req, res, next) => {
             status: "Bad Request",
             message: "Client error",
             statusCode: 400,
-            errors,
+            errors: errors,
         });
     }
     next();

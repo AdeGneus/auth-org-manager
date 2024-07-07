@@ -1,5 +1,5 @@
-export default {
-  port: process.env.PORT ?? 5000,
+module.exports = {
+  port: process.env.PORT || 5000,
   NODE_ENV: process.env.NODE_ENV,
 
   accessTokenTtl: process.env.ACCESS_TOKEN_TTL,
