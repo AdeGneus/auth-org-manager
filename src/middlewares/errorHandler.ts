@@ -5,11 +5,6 @@ import log from "../utils/logger";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
 import { JsonWebTokenError } from "jsonwebtoken";
 import { ResponseError } from "../interfaces/responseError";
-import {
-  PrismaClientInitializationError,
-  PrismaClientKnownRequestError,
-  PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
 import { ClientError } from "../exceptions/clientError";
 
 const handleFailedAuth = (err: any) => {
@@ -20,9 +15,6 @@ const handleFailedAuth = (err: any) => {
 
 const handleJWTError = () => {
   return new AppError("Authentication failed", 401);
-};
-const handlePrismaError = () => {
-  return new ClientError("Client Error");
 };
 
 export const sendErrorDev = (err: any, req: Request, res: Response) => {
@@ -45,7 +37,7 @@ export const sendErrorProd = (err: any, req: Request, res: Response) => {
     req.originalUrl.startsWith("/api")
   ) {
     // 1)  Operational, trusted error: send message to client
-    if (err instanceof AppError && err.isOperational) {
+    if (err.isOperational) {
       const appError = err as AppError;
 
       let response = {

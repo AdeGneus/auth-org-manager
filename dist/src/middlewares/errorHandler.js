@@ -9,16 +9,12 @@ var appError_1 = require("../exceptions/appError");
 var logger_1 = __importDefault(require("../utils/logger"));
 var unauthorizedError_1 = require("../exceptions/unauthorizedError");
 var jsonwebtoken_1 = require("jsonwebtoken");
-var clientError_1 = require("../exceptions/clientError");
 var handleFailedAuth = function (err) {
     var message = err.message;
     return new unauthorizedError_1.UnauthorizedError(message);
 };
 var handleJWTError = function () {
     return new appError_1.AppError("Authentication failed", 401);
-};
-var handlePrismaError = function () {
-    return new clientError_1.ClientError("Client Error");
 };
 var sendErrorDev = function (err, req, res) {
     if (req.originalUrl.startsWith("/auth") ||
@@ -36,7 +32,7 @@ var sendErrorProd = function (err, req, res) {
     if (req.originalUrl.startsWith("/auth") ||
         req.originalUrl.startsWith("/api")) {
         // 1)  Operational, trusted error: send message to client
-        if (err instanceof appError_1.AppError && err.isOperational) {
+        if (err.isOperational) {
             var appError = err;
             var response = {
                 status: appError.status,
