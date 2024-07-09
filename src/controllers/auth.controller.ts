@@ -6,6 +6,7 @@ import { ConflictError } from "../exceptions/conflictError";
 import { signToken } from "../utils/jwt";
 import { createUser, loginUser } from "../services/auth.service";
 import { ClientError } from "../exceptions/clientError";
+import { UnauthorizedError } from "../exceptions/unauthorizedError";
 
 const createSendToken = (
   user: Object,
@@ -36,9 +37,7 @@ export const register = asyncHandler(
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
-      return res.status(422).json({
-        errors: [{ field: "email", message: "Email already exists" }],
-      });
+      return next(new ClientError("Registration unsuccessful"));
     }
 
     // Create a new user record
@@ -63,7 +62,7 @@ export const login = asyncHandler(
 
     // Check if email and password exists
     if (!email || !password) {
-      return next(new ClientError("Please provide email and password!"));
+      return next(new UnauthorizedError("Authentication failed"));
     }
 
     const user = await loginUser({ email, password });

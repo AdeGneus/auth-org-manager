@@ -46,6 +46,38 @@ export const validateRegister = (
   }
   next();
 };
+export const validateLogin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password } = req.body;
+  const errors = [];
+
+  if (!email) {
+    errors.push({ field: "email", message: "Email is required" });
+  }
+  if (typeof email !== "string") {
+    errors.push({ field: "email", message: "Email must be a string" });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (email && !emailRegex.test(email)) {
+    errors.push({ field: "email", message: "Email format is invalid" });
+  }
+
+  if (!password) {
+    errors.push({ field: "password", message: "Password is required" });
+  }
+  if (typeof password !== "string") {
+    errors.push({ field: "password", message: "Password must be a string" });
+  }
+
+  if (errors.length > 0) {
+    return res.status(422).json({ errors });
+  }
+  next();
+};
 
 export const validateCreateOrganisation = (
   req: Request,

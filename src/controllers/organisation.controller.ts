@@ -10,6 +10,7 @@ import {
   isUserInOrganisation,
 } from "../services/organisation.service";
 import { UnauthorizedError } from "../exceptions/unauthorizedError";
+import { ClientError } from "../exceptions/clientError";
 
 export const getOrganisations = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -41,11 +42,7 @@ export const getOrganisation = asyncHandler(
     const hasAccess = await isUserInOrganisation(currentUser?.userId, orgId);
 
     if (!hasAccess) {
-      return next(
-        new UnauthorizedError(
-          "You do not have permission to access this organization"
-        )
-      );
+      return next(new UnauthorizedError("Authentication failed"));
     }
 
     const organisation = await findOrganisationById(orgId);
@@ -75,6 +72,10 @@ export const createOrganisation = asyncHandler(
       currentUser?.userId
     );
 
+    if (!newOrganisation) {
+      return new ClientError("Client Error");
+    }
+
     return res.status(201).json({
       status: "success",
       message: "Organisation created successfully",
@@ -89,15 +90,15 @@ export const addUser = asyncHandler(
     const { userId } = req.body;
     const currentUser = (req as CustomRequest).user;
 
+    if (!userId) {
+      return next(new ClientError("Invalid request"));
+    }
+
     // Check if current user belongs to the organization
     const hasAccess = await isUserInOrganisation(currentUser?.userId, orgId);
 
     if (!hasAccess) {
-      return next(
-        new UnauthorizedError(
-          "You do not have permission to access this organization"
-        )
-      );
+      return next(new UnauthorizedError("Authentication failed"));
     }
 
     await addUserToOrganisation(orgId, userId);

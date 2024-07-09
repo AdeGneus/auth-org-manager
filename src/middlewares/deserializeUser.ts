@@ -20,7 +20,7 @@ const deserializeUser = asyncHandler(
     if (!accessToken) {
       return next(
         new UnauthorizedError(
-          "You are not logged in! Please log in to get access"
+          "Authentication failed"
         )
       );
     }
@@ -41,7 +41,7 @@ const deserializeUser = asyncHandler(
       if (!currentUser) {
         return next(
           new UnauthorizedError(
-            "The user belonging to this token does no longer exist"
+            "Authentication failed"
           )
         );
       }
