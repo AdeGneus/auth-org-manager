@@ -5,5 +5,5 @@ var auth_controller_1 = require("../controllers/auth.controller");
 var validate_1 = require("../middlewares/validate");
 var router = (0, express_1.Router)();
 router.post("/register", validate_1.validateRegister, auth_controller_1.register);
-router.post("/login", auth_controller_1.login);
+router.post("/login", validate_1.validateLogin, auth_controller_1.login);
 exports.default = router;

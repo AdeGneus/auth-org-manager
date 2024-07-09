@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateAddUserToOrganisation = exports.validateCreateOrganisation = exports.validateRegister = void 0;
+exports.validateAddUserToOrganisation = exports.validateCreateOrganisation = exports.validateLogin = exports.validateRegister = void 0;
 var validateRegister = function (req, res, next) {
     var _a = req.body, firstName = _a.firstName, lastName = _a.lastName, email = _a.email, password = _a.password;
     var errors = [];
@@ -38,6 +38,31 @@ var validateRegister = function (req, res, next) {
     next();
 };
 exports.validateRegister = validateRegister;
+var validateLogin = function (req, res, next) {
+    var _a = req.body, email = _a.email, password = _a.password;
+    var errors = [];
+    if (!email) {
+        errors.push({ field: "email", message: "Email is required" });
+    }
+    if (typeof email !== "string") {
+        errors.push({ field: "email", message: "Email must be a string" });
+    }
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+        errors.push({ field: "email", message: "Email format is invalid" });
+    }
+    if (!password) {
+        errors.push({ field: "password", message: "Password is required" });
+    }
+    if (typeof password !== "string") {
+        errors.push({ field: "password", message: "Password must be a string" });
+    }
+    if (errors.length > 0) {
+        return res.status(422).json({ errors: errors });
+    }
+    next();
+};
+exports.validateLogin = validateLogin;
 var validateCreateOrganisation = function (req, res, next) {
     var _a = req.body, name = _a.name, description = _a.description;
     var errors = [];

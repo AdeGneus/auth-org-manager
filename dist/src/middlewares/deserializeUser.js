@@ -54,7 +54,7 @@ var deserializeUser = (0, asyncHandler_1.default)(function (req, _res, next) { r
                     accessToken = req.headers.authorization.split(" ")[1];
                 }
                 if (!accessToken) {
-                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("You are not logged in! Please log in to get access"))];
+                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("Authentication failed"))];
                 }
                 decoded = (0, jwt_1.verifyToken)(accessToken, "accessTokenPublicKey");
                 userId = decoded === null || decoded === void 0 ? void 0 : decoded.userId;
@@ -65,7 +65,7 @@ var deserializeUser = (0, asyncHandler_1.default)(function (req, _res, next) { r
             case 1:
                 currentUser = _a.sent();
                 if (!currentUser) {
-                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("The user belonging to this token does no longer exist"))];
+                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("Authentication failed"))];
                 }
                 // Grant access to protected route
                 req.user = currentUser;

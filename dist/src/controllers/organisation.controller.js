@@ -44,6 +44,7 @@ var asyncHandler_1 = __importDefault(require("../middlewares/asyncHandler"));
 var notFoundError_1 = require("../exceptions/notFoundError");
 var organisation_service_1 = require("../services/organisation.service");
 var unauthorizedError_1 = require("../exceptions/unauthorizedError");
+var clientError_1 = require("../exceptions/clientError");
 exports.getOrganisations = (0, asyncHandler_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var currentUser, organisations;
     return __generator(this, function (_a) {
@@ -77,7 +78,7 @@ exports.getOrganisation = (0, asyncHandler_1.default)(function (req, res, next) 
             case 1:
                 hasAccess = _a.sent();
                 if (!hasAccess) {
-                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("You do not have permission to access this organization"))];
+                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("Authentication failed"))];
                 }
                 return [4 /*yield*/, (0, organisation_service_1.findOrganisationById)(orgId)];
             case 2:
@@ -105,6 +106,9 @@ exports.createOrganisation = (0, asyncHandler_1.default)(function (req, res, nex
                 return [4 /*yield*/, (0, organisation_service_1.createNewOrganisation)(name, description, currentUser === null || currentUser === void 0 ? void 0 : currentUser.userId)];
             case 1:
                 newOrganisation = _b.sent();
+                if (!newOrganisation) {
+                    return [2 /*return*/, new clientError_1.ClientError("Client Error")];
+                }
                 return [2 /*return*/, res.status(201).json({
                         status: "success",
                         message: "Organisation created successfully",
@@ -121,11 +125,14 @@ exports.addUser = (0, asyncHandler_1.default)(function (req, res, next) { return
                 orgId = req.params.orgId;
                 userId = req.body.userId;
                 currentUser = req.user;
+                if (!userId) {
+                    return [2 /*return*/, next(new clientError_1.ClientError("Invalid request"))];
+                }
                 return [4 /*yield*/, (0, organisation_service_1.isUserInOrganisation)(currentUser === null || currentUser === void 0 ? void 0 : currentUser.userId, orgId)];
             case 1:
                 hasAccess = _a.sent();
                 if (!hasAccess) {
-                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("You do not have permission to access this organization"))];
+                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("Authentication failed"))];
                 }
                 return [4 /*yield*/, (0, organisation_service_1.addUserToOrganisation)(orgId, userId)];
             case 2:

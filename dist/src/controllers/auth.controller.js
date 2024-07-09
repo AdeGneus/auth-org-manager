@@ -46,6 +46,7 @@ var db_1 = __importDefault(require("../prisma/db"));
 var jwt_1 = require("../utils/jwt");
 var auth_service_1 = require("../services/auth.service");
 var clientError_1 = require("../exceptions/clientError");
+var unauthorizedError_1 = require("../exceptions/unauthorizedError");
 var createSendToken = function (user, statusCode, message, res) {
     // Create an access token
     var accessToken = (0, jwt_1.signToken)(user, "accessTokenPrivateKey", {
@@ -70,9 +71,7 @@ exports.register = (0, asyncHandler_1.default)(function (req, res, next) { retur
             case 1:
                 existingUser = _b.sent();
                 if (existingUser) {
-                    return [2 /*return*/, res.status(422).json({
-                            errors: [{ field: "email", message: "Email already exists" }],
-                        })];
+                    return [2 /*return*/, next(new clientError_1.ClientError("Registration unsuccessful"))];
                 }
                 return [4 /*yield*/, (0, auth_service_1.createUser)({
                         firstName: firstName,
@@ -99,7 +98,7 @@ exports.login = (0, asyncHandler_1.default)(function (req, res, next) { return _
                 _a = req.body, email = _a.email, password = _a.password;
                 // Check if email and password exists
                 if (!email || !password) {
-                    return [2 /*return*/, next(new clientError_1.ClientError("Please provide email and password!"))];
+                    return [2 /*return*/, next(new unauthorizedError_1.UnauthorizedError("Authentication failed"))];
                 }
                 return [4 /*yield*/, (0, auth_service_1.loginUser)({ email: email, password: password })];
             case 1:
